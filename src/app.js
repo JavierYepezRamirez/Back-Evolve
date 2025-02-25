@@ -7,6 +7,13 @@ const pagosRoutes = require("./routes/pagosRoutes");
 
 const app = express();
 app.use(express.json());
+
+const corsOptions = {
+  origin: 'https://evolvepagos.netlify.app', // Permite solicitudes desde tu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  credentials: true, // Permite enviar cookies si es necesario
+};
+
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
