@@ -18,13 +18,13 @@ const serviceAccount2 = {
 // Pagos
 const app1 = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount1),
-  databaseURL: "https://crud-jgarrix99-default-rtdb.firebaseio.com/"
+  databaseURL: "https://pagos-4c4bb-default-rtdb.firebaseio.com/"
 }, "app1");
 
 // Clientes y empleados
 const app2 = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount2),
-  databaseURL: "https://backend-mvc-5dc03-default-rtdb.firebaseio.com/"
+  databaseURL: "https://usuarios-1c993-default-rtdb.firebaseio.com/"
 }, "app2");
 
 module.exports = { app1, app2 };
