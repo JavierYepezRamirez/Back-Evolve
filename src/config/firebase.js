@@ -1,45 +1,32 @@
-require("dotenv").config();
 const admin = require("firebase-admin");
-const { GoogleAuth } = require("google-auth-library");
+require("dotenv").config(); 
 
-async function getFirebaseAdminApp(databaseURL, clientId, clientSecret, refreshToken) {
-  const auth = new GoogleAuth({
-    credentials: {
-      client_id: clientId,
-      client_secret: clientSecret,
-      refresh_token: refreshToken,
-    },
-    scopes: ["https://www.googleapis.com/auth/firebase.database"],
-  });
+const serviceAccount1 = {
+  type: "service_account",
+  project_id: process.env.FIREBASE_PROJECT_ID_PAGOS,
+  private_key: process.env.FIREBASE_PRIVATE_KEY_PAGOS.replace(/\\n/g, "\n"),
+  client_email: process.env.FIREBASE_CLIENT_EMAIL_PAGOS
+};
 
-  const client = await auth.getClient();
-  const accessToken = await client.getAccessToken();
+const serviceAccount2 = {
+  type: "service_account",
+  project_id: process.env.FIREBASE_PROJECT_ID_CLIENTES,
+  private_key: process.env.FIREBASE_PRIVATE_KEY_CLIENTES.replace(/\\n/g, "\n"),
+  client_email: process.env.FIREBASE_CLIENT_EMAIL_CLIENTES
+};
 
-  return admin.initializeApp({
-    credential: admin.credential.accessToken(accessToken),
-    databaseURL: databaseURL,
-  });
-}
+// Pagos
+const app1 = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount1),
+  databaseURL: "https://crud-jgarrix99-default-rtdb.firebaseio.com/"
+}, "app1");
 
-async function initializeApps() {
-  // Pagos
-  const app1 = await getFirebaseAdminApp(
-    "https://crud-jgarrix99-default-rtdb.firebaseio.com/",
-    process.env.CLIENT_ID_1,
-    process.env.CLIENT_SECRET_1,
-    process.env.FIREBASE_REFRESH_TOKEN_1
-  );
+// Clientes y empleados
+const app2 = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount2),
+  databaseURL: "https://backend-mvc-5dc03-default-rtdb.firebaseio.com/"
+}, "app2");
 
-  // Clientes y empleados
-  const app2 = await getFirebaseAdminApp(
-    "https://backend-mvc-5dc03-default-rtdb.firebaseio.com/",
-    process.env.CLIENT_ID_2,
-    process.env.CLIENT_SECRET_2,
-    process.env.FIREBASE_REFRESH_TOKEN_2
-  );
+module.exports = { app1, app2 };
 
-  return { app1, app2 };
-}
-
-module.exports = initializeApps;
 
