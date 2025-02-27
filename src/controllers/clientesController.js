@@ -44,7 +44,6 @@ const updateCliente = async (req, res) => {
     const db = app2.database();
     const clienteRef = db.ref(`contactos_clientes/contactos_clientes/${id}`);
 
-    // Verificar si el cliente existe
     const snapshot = await clienteRef.once("value");
     if (!snapshot.exists()) {
       return res.status(404).json({ message: "Cliente no encontrado" });
@@ -57,6 +56,7 @@ const updateCliente = async (req, res) => {
     res.status(500).json({ message: "Error al actualizar cliente", error: error.message });
   }
 };
+
 
 const deleteCliente = async (req, res) => {
   const { id } = req.params;
