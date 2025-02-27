@@ -16,7 +16,7 @@ const getClientes = async (req, res) => {
 const agregarCliente = async (req, res) => {
   const nuevosDatos = req.body;
 
-  if (!nuevosDatos) {
+  if (!nuevosDatos || !nuevosDatos.nombre || !nuevosDatos.telefono) {
     return res.status(400).json({ message: "Los datos del cliente son requeridos" });
   }
 
@@ -24,9 +24,8 @@ const agregarCliente = async (req, res) => {
     const db = app2.database();
     const clienteRef = db.ref("contactos_clientes/contactos_clientes");
 
-    // Obtener todos los clientes para determinar el ID más alto
     const snapshot = await clienteRef.once("value");
-    let maxId = 0;
+    let maxId = -1; 
 
     snapshot.forEach(cliente => {
       const clienteData = cliente.val();
@@ -38,14 +37,13 @@ const agregarCliente = async (req, res) => {
       }
     });
 
-    // Incrementar el ID más alto encontrado
-    const nuevoId = maxId + 1;
-    nuevosDatos.id = nuevoId.toString(); // Asegúrate de que el ID sea un string si es necesario
 
-    // Agregar el nuevo cliente a la base de datos
-    const newClienteRef = await clienteRef.push(nuevosDatos);
-    
-    res.status(201).json({ message: "Cliente agregado correctamente", id: newClienteRef.key });
+    const nuevoId = maxId + 1;
+    nuevosDatos.id = nuevoId.toString(); 
+
+    await clienteRef.child(nuevoId).set(nuevosDatos); 
+
+    res.status(201).json({ message: "Cliente agregado correctamente", id: nuevoId });
   } catch (error) {
     res.status(500).json({ message: "Error al agregar cliente", error: error.message });
   }
@@ -102,6 +100,8 @@ const deleteCliente = async (req, res) => {
 };
 
 module.exports = { getClientes, agregarCliente, updateCliente, deleteCliente };
+
+
 
 
 
