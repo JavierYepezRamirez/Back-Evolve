@@ -9,9 +9,10 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: 'https://evolvepagos.netlify.app', // Permite solicitudes desde tu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-  credentials: true, // Permite enviar cookies si es necesario
+  origin: 'http://localhost:3000',
+  // origin: 'https://evolvepagos.netlify.app', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  credentials: true, 
 };
 
 app.use(cors(corsOptions));
